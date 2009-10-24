@@ -22,16 +22,7 @@ public class WishExp extends AbstractExp {
 	}
 
 	public boolean isNormalForm() {
-		return result == null ?
-				exp.isNormalForm() :
-				result.isNormalForm();
-	}
-
-	@Override
-	public boolean isWeakHeadNormalForm() {
-		return result == null ?
-				exp.isWeakHeadNormalForm() :
-				result.isWeakHeadNormalForm();
+		return false;
 	}
 	
 	public IExp getResult() {

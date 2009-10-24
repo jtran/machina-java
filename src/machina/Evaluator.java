@@ -32,7 +32,7 @@ public class Evaluator {
 	public IExp force(EvalCtx ctx, IExp exp) {
 		
 		while (!exp.isNormalForm()) {
-			// Step each thing in the queue.
+			// Step each thing in the queue.  This could be done in parallel.
 			Queue<Callable<Boolean>> q2 = new LinkedList<Callable<Boolean>>();
 			for (Callable<Boolean> work : queue) {
 				try {
@@ -42,14 +42,15 @@ public class Evaluator {
 					throw new RuntimeException(e);
 				}
 			}
-			// Flip queues.
-			queue = q2;
-			queue.addAll(dynamicQueue);
-			dynamicQueue.clear();
 			
 			// Eval our main exp.  This could add stuff to the queue.
 			IExp e2 = exp.evalStep(ctx);
 			exp = e2;
+			
+			// Flip queues.
+			queue = q2;
+			queue.addAll(dynamicQueue);
+			dynamicQueue.clear();
 			
 			// Track how many steps we've taken.
 			step++;
@@ -58,9 +59,7 @@ public class Evaluator {
 					+ " dq:" + dynamicQueue);
 			try {
 				Thread.sleep(1000);
-			} catch (InterruptedException e) {
-				// ignore
-			}
+			} catch (InterruptedException e) {}
 		}
 		return exp;
 	}

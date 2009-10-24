@@ -31,7 +31,7 @@ public class ClosureExp extends AbstractExp {
 	
 	@Override
 	public String toString() {
-		return "(closure " + getFn() + " " + getCtx() + ")";
+		return "<" + getCtx() + ", " + getFn() + ">";
 	}
 
 }

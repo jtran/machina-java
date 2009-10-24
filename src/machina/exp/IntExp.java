@@ -24,22 +24,16 @@ public class IntExp extends AbstractExp {
 	}
 	
 	@Override
+	public boolean equals(IExp e) {
+		if (!(e instanceof IntExp)) return false;
+		
+		IntExp n = (IntExp)e;
+		return getN() == n.getN();
+	}
+	
+	@Override
 	public String toString() {
 		return String.valueOf(n);
-	}
-	
-	@Override
-	public int hashCode() {
-		return getN();
-	}
-	
-	@Override
-	public boolean equals(Object o) {
-		if (o == this) return true;
-		if (!(o instanceof IntExp)) return false;
-		
-		IntExp e = (IntExp)o;
-		return getN() == e.getN();
 	}
 
 }
