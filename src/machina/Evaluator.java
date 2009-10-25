@@ -10,7 +10,7 @@ import machina.frame.EvalFrame;
 /**
  * Singleton
  */
-public class Evaluator {
+public class Evaluator implements IObservable<IExp> {
 	
 	private static Evaluator instance = new Evaluator();
 	
@@ -19,6 +19,7 @@ public class Evaluator {
 	}
 	
 	private long step = 0L;
+	private final Observable<IExp> observable = new Observable<IExp>(null);
 	private Queue<Callable<Boolean>> queue = new LinkedList<Callable<Boolean>>();
 	private Queue<Callable<Boolean>> dynamicQueue = new LinkedList<Callable<Boolean>>();
 
@@ -55,8 +56,8 @@ public class Evaluator {
 			// Track how many steps we've taken.
 			step++;
 
-			System.out.println("step: " + step + " exp: " + exp + " q:" + queue
-					+ " dq:" + dynamicQueue);
+			System.out.println("step: " + step + " exp: " + exp + "  q:" + queue);
+			observable.notifyObservers(exp);
 			try {
 				Thread.sleep(1000);
 			} catch (InterruptedException e) {}
@@ -87,5 +88,9 @@ public class Evaluator {
 	
 	public long getStep() {
 		return step;
+	}
+
+	public void registerObserver(IObserver<IExp> observer) {
+		observable.registerObserver(observer);
 	}
 }

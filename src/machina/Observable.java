@@ -1,25 +1,29 @@
 package machina;
 
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.Set;
+import java.util.TreeSet;
 
 public class Observable<T> implements IObservable<T> {
 	
 	private final T observable;
-	private final Map<IObserver<T>, Object> observers = new TreeMap<IObserver<T>, Object>();
+	private final Set<IObserver<T>> observers = new TreeSet<IObserver<T>>();
 	
 	public Observable(T observable) {
 		this.observable = observable;
 	}
 
 	public void notifyObservers() {
-		for (IObserver<T> observer : observers.keySet()) {
+		notifyObservers(observable);
+	}
+
+	public void notifyObservers(T observable) {
+		for (IObserver<T> observer : observers) {
 			observer.observedUpdate(observable);
 		}
 	}
 
 	public void registerObserver(IObserver<T> observer) {
-		observers.put(observer, null);
+		observers.add(observer);
 	}
 
 }

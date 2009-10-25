@@ -7,6 +7,7 @@ import javax.swing.JFrame;
 import machina.EvalCtx;
 import machina.Evaluator;
 import machina.IExp;
+import machina.IObserver;
 import machina.Symbol;
 import machina.exp.ApplyExp;
 import machina.exp.FnExp;
@@ -16,15 +17,24 @@ import machina.exp.PrimExp;
 import machina.exp.SymExp;
 import machina.frame.EvalFrame;
 import machina.ui.WindowFrameController;
+import machina.ui.WindowFrameView;
 
-public class Machina {
+public class Machina implements IObserver<IExp> {
+	
+	Evaluator evalr = Evaluator.getInstance();
+	
+	WindowFrameController controller;
+	JFrame wnd;
 	
 	private Machina() {}
 	
 	public static void main(String[] args) {
+		new Machina().run();
+	}
+	
+	public void run() {
 		// Model
 		// Exp
-		Evaluator evalr = Evaluator.getInstance();
 		//IExp ans = new IntExp(42);
 		IExp id = new FnExp(new Symbol("x"), new SymExp(new Symbol("x")));
 		IExp e = new ApplyExp(id, new IntExp(42));
@@ -34,17 +44,27 @@ public class Machina {
 		EvalFrame frame = new EvalFrame(emptyCtx, e);
 		
 		// Controller
-		WindowFrameController c = new WindowFrameController(evalr, frame);
+		controller = new WindowFrameController(evalr, frame);
 		
 		// View
-		JFrame wnd = new JFrame("Machina");
+		wnd = new JFrame("Machina");
 		wnd.setDefaultCloseOperation(EXIT_ON_CLOSE);
-		wnd.add(c.getView());
+		wnd.add(controller.getView());
 		wnd.pack();
 		wnd.setVisible(true);
+		
+		// Hook into evaluation steps.
+		evalr.registerObserver(this);
 		
 		// Evaluate
 		evalr.force(frame);
 	}
+
+	public void observedUpdate(IExp observable) {
+		//System.out.println("observed " + observable);
+		wnd.pack();
+	}
+	
+	
 
 }
